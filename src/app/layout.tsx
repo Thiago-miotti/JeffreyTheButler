@@ -18,8 +18,9 @@ const quicksSand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  title: "Jeffrey The Butler",
+  title: "Jeffrey",
   description: "Jeffrey The Butler your own home fixer",
+  icons: '/JeffreyIconOnly.ico'
 };
 
 export default function RootLayout({
@@ -29,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="lemonade" className={`${geistSans.variable} ${geistMono.variable} ${quicksSand.variable}`}>
-      <body>{children}</body>
+      <body className="overflow-hidden h-screen">{children}</body>
     </html>
   );
 }

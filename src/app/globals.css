@@ -4,5 +4,7 @@
 }
 
 @theme {
-  --font-sans: "Quicksand", "sans-serif"
+  --font-sans: "Quicksand", "sans-serif";
+
+  --breakpoint-3xl: 120rem;
 }
