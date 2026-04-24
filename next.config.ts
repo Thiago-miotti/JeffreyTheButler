@@ -1,17 +1,16 @@
-import type { NextConfig } from "next";
-
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  async redirects() { //Redirects to login page always
+  async redirects() {
+    //Redirects to login page always
     return [
       {
         source: '/',
         destination: '/login',
-        permanent: false, 
+        permanent: false,
       },
     ]
   },
-};
+}
 
-
-export default nextConfig;
+export default nextConfig

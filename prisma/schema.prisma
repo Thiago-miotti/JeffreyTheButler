@@ -1,0 +1,96 @@
+// Jeffrey - Smart Home Inventory Management
+// Prisma Schema
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────────────
+
+enum CategoryName {
+  GRAOS      // Grãos
+  LATICINIOS // Laticínios
+  HIGIENE    // Higiene
+  LIMPEZA    // Limpeza
+  BEBIDAS    // Bebidas
+  TEMPEROS   // Temperos
+  ENLATADOS  // Enlatados
+  OUTROS     // Outros
+}
+
+enum ProductStatus {
+  OK          // quantity >= minQuantity
+  ALMOST_DONE // quantity is close to minQuantity
+  CRITICAL    // quantity <= minQuantity
+}
+
+// ─────────────────────────────────────────────────────
+// USER
+// ─────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Store as bcrypt hash — never plain text
+  name      String
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  inventory InventoryItem[]
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────────────
+// PRODUCT
+// A shared catalog of products. Created when a user adds
+// a product manually or via a receipt QR code scan.
+// Multiple users can have the same product in their inventory.
+// ─────────────────────────────────────────────────────
+
+model Product {
+  id        String       @id @default(cuid())
+  name      String
+  category  CategoryName
+  unit      String       // "kg", "L", "un", etc.
+  barcode   String?      @unique // EAN/GTIN from product barcode or receipt QR scan
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  inventory InventoryItem[]
+
+  @@map("products")
+}
+
+// ─────────────────────────────────────────────────────
+// INVENTORY
+// A user's stock of a specific product.
+// Tracks quantity and alert threshold per user.
+// ─────────────────────────────────────────────────────
+
+model InventoryItem {
+  id          String        @id @default(cuid())
+  quantity    Float         // Current stock
+  minQuantity Float         // Alert threshold — triggers ALMOST_DONE / CRITICAL
+  status      ProductStatus @default(OK)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  userId    String
+  productId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId]) // A user can only have one inventory entry per product
+  @@map("inventory_items")
+}

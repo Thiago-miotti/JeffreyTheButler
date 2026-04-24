@@ -1,16 +1,12 @@
 // components/StatusBadge.tsx
-import { Status, getStatusBadgeClass, getStatusLabel } from "@/types/status";
+import { Status, getStatusBadgeClass, getStatusLabel } from '@/types/status'
 
 interface StatusBadgeProps {
-    status: Status;
+  status: Status
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {
-    return (
-        <span className={getStatusBadgeClass(status)}>
-            {getStatusLabel(status)}
-        </span>
-    );
+  return <span className={getStatusBadgeClass(status)}>{getStatusLabel(status)}</span>
 }
 
 // Uso:
